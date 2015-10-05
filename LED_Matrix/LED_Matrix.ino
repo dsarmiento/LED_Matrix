@@ -23,7 +23,7 @@ byte numbers[10][8] = {{B01111110, B11111111, B11100111, B11100111, B11100111, B
 int latchPin = 8;  //Pin connected to ST_CP of 74HC595
 int clockPin = 12; //Pin connected to SH_CP of 74HC595
 int dataPin = 11;  //Pin connected to DS of 74HC595
-
+int outputEn = 10;
 int counter = 0; // 0 - 9999
 
 
@@ -31,52 +31,71 @@ void setup() {
   pinMode(latchPin, OUTPUT);
   pinMode(clockPin, OUTPUT);
   pinMode(dataPin, OUTPUT);
+  pinMode(outputEn, OUTPUT);
+  digitalWrite(outputEn, LOW);
+  digitalWrite(latchPin, HIGH);
+
 }
 
 void loop() {
   if(counter > 9999)
-    while(1);
-    
+    counter = 0;  
   int digits[4]; // Digits in time 01:23
   digits[0] = counter/1000;
   digits[1] = (counter/100)%10;
   digits[2] = (counter/10)%10;
   digits[3] = counter%10;
   
-  for(int i = 0; i < 8; i++){
-    byte data[6]; // 0 - Rows; 5 - Col4
-    byte temp = 0;
-    // Compute the row data
-    data[0] = row[i];
-    
-    temp = numbers[digits[0]][i] >> 1;
-    data[1] = ~temp;
-    
-    temp = 0;
-    temp = numbers[digits[0]][i] << 7;
-    temp |= numbers[digits[1]][i] >> 2;
-    data[2] = ~temp;
-    
-    temp = 0;
-    temp = numbers[digits[1]][i] << 6;
-    temp |= colon[i] << 2;
-    temp |= numbers[digits[2]][i] >> 6;
-    data[3] = ~temp;
-    
-    temp = 0;
-    temp = numbers[digits[2]][i] << 2;
-    temp |= numbers[digits[3]][i] >> 7;
-    data[4] = ~temp;
-    
-    temp = 0;
-    temp = numbers[digits[3]][i] << 1;
-    data[5] = ~temp;
-    
-    // Shift the row out (backwards so data[0] is last out)
-    for(int j = 5; j >= 0; j--){
-      shiftOut(dataPin, clockPin, data[j]); 
+  long int timer = millis();
+  
+  while(millis() < timer + 10){
+    for(int i = 0; i < 8; i++){
+      byte data[6]; // 0 - Rows; 5 - Col4
+      byte temp = 0;
+      // Compute the row data
+      data[0] = row[i];
+      
+      temp = numbers[digits[0]][i] >> 1;
+      data[1] = ~temp;
+      
+      temp = 0;
+      temp = numbers[digits[0]][i] << 7;
+      temp |= numbers[digits[1]][i] >> 2;
+      data[2] = ~temp;
+      
+      temp = 0;
+      temp = numbers[digits[1]][i] << 6;
+      temp |= colon[i] << 2;
+      temp |= numbers[digits[2]][i] >> 6;
+      data[3] = ~temp;
+      
+      temp = 0;
+      temp = numbers[digits[2]][i] << 2;
+      temp |= numbers[digits[3]][i] >> 7;
+      data[4] = ~temp;
+      
+      temp = 0;
+      temp = numbers[digits[3]][i] << 1;
+      data[5] = ~temp;
+      
+
+
+      
+        digitalWrite(latchPin, LOW);
+        shiftOut(dataPin, clockPin, LSBFIRST, data[5]);
+        shiftOut(dataPin, clockPin, LSBFIRST, data[4]); 
+        shiftOut(dataPin, clockPin, LSBFIRST, data[3]); 
+        shiftOut(dataPin, clockPin, LSBFIRST, data[2]); 
+        shiftOut(dataPin, clockPin, LSBFIRST, data[1]); 
+        shiftOut(dataPin, clockPin, LSBFIRST, data[0]);  
+
+        digitalWrite(latchPin, HIGH);
+
+      
+
     }
   }
     
   counter++;
+  
 }
