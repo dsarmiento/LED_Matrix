@@ -7,7 +7,7 @@
  */
 
 byte row[8]         =  {B00000001, B00000010, B00000100, B00001000, B00010000, B00100000, B01000000, B10000000};  // Layer activation
-byte colon[8]       =  {    B0000,     B0110,     B0110,     B0000,     B0000,     B0110,     B0110,     B0000};  // :
+byte colon[8]       =  {B00000000, B00011000, B00011000, B00000000, B00000000, B00011000, B00011000, B00000000};  // :
 byte numbers[10][8] = {{B01111110, B11111111, B11100111, B11100111, B11100111, B11100111, B11111111, B01111110},  // 0
                        {B00001110, B00000111, B00000111, B00000111, B00000111, B00000111, B00000111, B00000111},  // 1
                        {B11111110, B11111111, B00000111, B01111111, B11111110, B11100000, B11111111, B11111111},  // 2
@@ -45,7 +45,7 @@ void loop() {
   
   long int timer = millis();
   
-  while(millis() < timer + 10){
+  while(millis() < timer + 50){
     for(int i = 0; i < 8; i++){
       byte data[6]; // 0 - Rows; 5 - Col4
       byte temp = 0;
@@ -62,7 +62,7 @@ void loop() {
       
       temp = 0;
       temp = numbers[digits[1]][i] << 6;
-      temp |= colon[i] << 2;
+      temp |= colon[i];
       temp |= numbers[digits[2]][i] >> 6;
       data[3] = ~temp;
       
