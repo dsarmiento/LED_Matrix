@@ -23,7 +23,6 @@ byte numbers[10][8] = {{B01111110, B11111111, B11100111, B11100111, B11100111, B
 int latchPin = 8;  //Pin connected to ST_CP of 74HC595
 int clockPin = 12; //Pin connected to SH_CP of 74HC595
 int dataPin = 11;  //Pin connected to DS of 74HC595
-int outputEn = 10;
 int counter = 0; // 0 - 9999
 
 
@@ -31,8 +30,6 @@ void setup() {
   pinMode(latchPin, OUTPUT);
   pinMode(clockPin, OUTPUT);
   pinMode(dataPin, OUTPUT);
-  pinMode(outputEn, OUTPUT);
-  digitalWrite(outputEn, LOW);
   digitalWrite(latchPin, HIGH);
 
 }
@@ -78,24 +75,15 @@ void loop() {
       temp = numbers[digits[3]][i] << 1;
       data[5] = ~temp;
       
-
-
-      
-        digitalWrite(latchPin, LOW);
-        shiftOut(dataPin, clockPin, LSBFIRST, data[5]);
-        shiftOut(dataPin, clockPin, LSBFIRST, data[4]); 
-        shiftOut(dataPin, clockPin, LSBFIRST, data[3]); 
-        shiftOut(dataPin, clockPin, LSBFIRST, data[2]); 
-        shiftOut(dataPin, clockPin, LSBFIRST, data[1]); 
-        shiftOut(dataPin, clockPin, LSBFIRST, data[0]);  
-
-        digitalWrite(latchPin, HIGH);
-
-      
-
+      digitalWrite(latchPin, LOW);
+      shiftOut(dataPin, clockPin, LSBFIRST, data[5]);
+      shiftOut(dataPin, clockPin, LSBFIRST, data[4]); 
+      shiftOut(dataPin, clockPin, LSBFIRST, data[3]); 
+      shiftOut(dataPin, clockPin, LSBFIRST, data[2]); 
+      shiftOut(dataPin, clockPin, LSBFIRST, data[1]); 
+      shiftOut(dataPin, clockPin, LSBFIRST, data[0]);  
+      digitalWrite(latchPin, HIGH);
     }
-  }
-    
+  }  
   counter++;
-  
 }
