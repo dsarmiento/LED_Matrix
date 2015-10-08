@@ -183,6 +183,39 @@ void loop() {
     }
     steps++;
   }else if(option == 2){
-    
+    long timer = millis();
+    for(int i = 0; i < 8; i++){
+      if((millis() < timer + 500) && i == 0){
+        int rand = millis() % 40;
+        if(0 <= rand < 8){
+          data[1][0] |=  1 << rand;
+        }else if(8 <= rand < 16){
+          rand %= 8;
+          data[2][0] |=  1 << rand;
+        }else if(16 <= rand < 24){
+          rand %= 8;
+          data[3][0] |=  1 << rand;
+        }else if(24 <= rand < 32){
+          rand %= 8;
+          data[4][0] |=  1 << rand;
+        }else{
+          rand %= 8;
+          data[5][0] |=  1 << rand;
+        }
+      }
+      if(i != 0){
+        
+      }
+      
+      
+      digitalWrite(latchPin, LOW);
+      shiftOut(dataPin, clockPin, LSBFIRST, ~data[5][i]);
+      shiftOut(dataPin, clockPin, LSBFIRST, ~data[4][i]); 
+      shiftOut(dataPin, clockPin, LSBFIRST, ~data[3][i]); 
+      shiftOut(dataPin, clockPin, LSBFIRST, ~data[2][i]); 
+      shiftOut(dataPin, clockPin, LSBFIRST, ~data[1][i]); 
+      shiftOut(dataPin, clockPin, LSBFIRST, row[i]);  
+      digitalWrite(latchPin, HIGH);
+    }
   }
 }
