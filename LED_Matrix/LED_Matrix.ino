@@ -55,10 +55,9 @@ int option = 1;
 long int timer;
 boolean flag[8] = {1,1,1,1,1,1,1};
 char msg[256]; // HELLO WORLD
-String message = "WELCOME TO THE TI LAB       ";
+String message = "YOU ARE THE REAL MVP       ";
 byte data[6][8]; // 0 - Rows; 5 - Col4
-byte temp[5];
-byte ch;
+byte temp[5], ch;
 
 void setup() {
   pinMode(latchPin, OUTPUT);
@@ -183,5 +182,7 @@ void loop() {
       } 
     }
     steps++;
+  }else if(option == 2){
+    
   }
 }
